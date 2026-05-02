@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خطوة خضراء - رؤية 2030</title>
+    <style>
+        :root {
+            --main-green: #00843D;
+            --light-green: #f0fff4;
+            --glass: rgba(255, 255, 255, 0.95);
+            --text-dark: #2d3436;
+        }
+
+        * { box-sizing: border-box; }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+                        url('https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover; background-attachment: fixed;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .app-card {
+            width: 92%; max-width: 450px; background: var(--glass);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-radius: 35px; box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            overflow: hidden; animation: cardEntry 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin: 20px 0;
+        }
+
+        @keyframes cardEntry {
+            from { opacity: 0; transform: scale(0.9) translateY(30px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        header {
+            padding: 25px; display: flex; align-items: center; gap: 15px;
+            background: #ffffff; border-bottom: 1px solid #f0f0f0;
+        }
+
+        .logo-box {
+            background: var(--main-green); width: 55px; height: 55px;
+            border-radius: 18px; display: flex; align-items: center; justify-content: center;
+            animation: pulseGreen 2s infinite;
+        }
+
+        @keyframes pulseGreen {
+            0% { box-shadow: 0 0 0 0 rgba(0, 132, 61, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 132, 61, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 132, 61, 0); }
+        }
+
+        .content { padding: 30px 25px; text-align: right; }
+
+        .main-title { font-size: 1.6rem; margin: 0; color: var(--text-dark); font-weight: 900; }
+        .welcome-text { color: #636e72; font-size: 0.9rem; margin-top: 10px; line-height: 1.6; }
+
+        .progress-dots { display: flex; gap: 8px; margin: 20px 0 10px 0; }
+        .dot { height: 8px; flex: 1; background: #e0e0e0; border-radius: 10px; transition: 0.5s; }
+        .dot.active { background: var(--main-green); transform: scaleY(1.2); }
+
+        .responsibility-msg {
+            font-size: 0.85rem; color: var(--main-green); font-weight: 600;
+            margin-bottom: 25px; transition: 0.3s; height: 1.2rem; font-style: italic;
+        }
+
+        .question-container { transition: 0.4s; }
+        .fade-out { opacity: 0; transform: translateX(20px); }
+        .fade-in { opacity: 1; transform: translateX(0); }
+
+        .q-label { font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; display: block; color: var(--text-dark); }
+
+        .option {
+            background: white; border: 2px solid #f1f3f5; padding: 18px;
+            border-radius: 20px; margin-bottom: 12px; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 600;
+        }
+
+        .option:hover {
+            border-color: var(--main-green);
+            background: var(--light-green);
+            transform: translateX(-5px);
+        }
+
+        #result-screen { display: none; text-align: center; padding: 40px 25px; }
+        .emoji-anim { font-size: 80px; animation: bounceIn 1s both; }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .btn-share {
+            background: var(--main-green); color: white; border: none; padding: 18px;
+            border-radius: 22px; width: 100%; font-size: 1.1rem; font-weight: 800;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,132,61,0.2);
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-card">
+    <header>
+        <div class="logo-box">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8a13 13 0 0 1-13 13L11 20z"></path>
+            </svg>
+        </div>
+        <div class="header-text">
+            <h1 style="margin:0; font-size:1.4rem;">GreenStep</h1>
+            <small style="color: #888;">مبادرة أسبوع البيئة ٢٠٢٦</small>
+        </div>
+    </header>
+
+    <div class="content" id="quiz-area">
+        <h1 class="main-title">حاسبة البصمة الكربونية</h1>
+        <p class="welcome-text">شاركينا في حماية كوكبنا. قومي بحساب بصمتك الكربونية لنرى معاً كيف سيتحول كوكبنا إلى جنة خضراء بفضل قراراتك.</p>
+
+        <div class="progress-dots" id="dots"></div>
+        <div class="responsibility-msg" id="resp-msg">نحو مستقبل مستدام...</div>
+
+        <div id="q-container" class="question-container">
+            <span class="q-label" id="q-text">جاري التحميل...</span>
+            <div id="options"></div>
+        </div>
+    </div>
+
+    <div id="result-screen">
+        <div id="future-visual" class="emoji-anim"></div>
+        <h2 id="res-title" style="color: var(--text-dark); margin-top: 10px;"></h2>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 20px; margin: 20px 0; text-align: right; border-right: 5px solid var(--main-green);">
+            <p id="res-scenario" style="line-height: 1.6; margin: 0; color: #444; font-size: 0.95rem;"></p>
+        </div>
+        <button class="btn-share" onclick="alert('صوري الشاشة وشاركينا النتيجة 📸')">شاركينا النتيجة ✨</button>
+        <button onclick="location.reload()" style="background:none; border:none; color:#888; margin-top:15px; cursor:pointer; font-weight:600;">إعادة الاختبار</button>
+    </div>
+</div>
+
+<script>
+    let current = 0;
+    let carbonScore = 0;
+
+    const questions = [
+        { q: "كم ساعة تقضينها في السيارة أسبوعياً؟", ops: [{t: "أقل من ساعتين", v: 20}, {t: "أكثر من 5 ساعات", v: 0}] },
+        { q: "لمسافة قصيرة، ما هو خيارك المفضل؟", ops: [{t: "المشي أو الدراجة", v: 20}, {t: "السيارة دائماً", v: 0}] },
+        { q: "هل تهتمين بإعادة تدوير مشترياتك؟", ops: [{t: "نعم، وبشكل مستمر", v: 20}, {t: "ليس دائماً", v: 0}] },
+        { q: "كيف تتعاملين مع استهلاك البلاستيك؟", ops: [{t: "أستخدم بدائل مستدامة", v: 20}, {t: "أعتمد على البلاستيك", v: 0}] },
+        { q: "هل تدعمين المنتجات المحلية؟", ops: [{t: "نعم، لتقليل الشحن", v: 20}, {t: "لا يهمني المصدر", v: 0}] }
+    ];
+
+    const msgs = ["خطوتك الأولى نحو 2030...", "وعيك يبني مستقبلاً أخضر...", "كل قرار يغير المعادلة...", "أوشكنا على الوصول...", "لنكتشف النتيجة!"];
+
+    function init() {
+        const dotsContainer = document.getElementById('dots');
+        questions.forEach(() => {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            dotsContainer.appendChild(dot);
+        });
+        render();
+    }
+
+    function render() {
+        const qContainer = document.getElementById('q-container');
+        qContainer.classList.remove('fade-in');
+        qContainer.classList.add('fade-out');
+
+        setTimeout(() => {
+            const q = questions[current];
+            document.getElementById('q-text').innerText = q.q;
+            document.getElementById('resp-msg').innerText = msgs[current];
+
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((d, i) => d.classList.toggle('active', i <= current));
+
+            const optDiv = document.getElementById('options');
+            optDiv.innerHTML = '';
+
+            q.ops.forEach(o => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.innerHTML = `<span>${o.t}</span> <span>←</span>`;
+                div.onclick = () => {
+                    carbonScore += o.v;
+                    if(current < questions.length - 1) {
+                        current++;
+                        render();
+                    } else {
+                        showResult();
+                    }
+                };
+                optDiv.appendChild(div);
+            });
+
+            qContainer.classList.remove('fade-out');
+            qContainer.classList.add('fade-in');
+        }, 300);
+    }
+
+    function showResult() {
+        document.getElementById('quiz-area').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+
+        const vis = document.getElementById('future-visual');
+        const title = document.getElementById('res-title');
+        const scenario = document.getElementById('res-scenario');
+
+        if(carbonScore >= 80) {
+            vis.innerHTML = '🇸🇦🌿';
+            title.innerText = "بطلة السعودية الخضراء!";
+            scenario.innerHTML = "<b>سيناريو 2030:</b> بفضل وعيك، المملكة الآن وجهة عالمية للاستدامة. مدينتنا خالية من الانبعاثات، والمليارات من الأشجار التي زرعناها تزهر في كل مكان. أنتِ جزء حقيقي من نجاح رؤية 2030!";
+        } else if(carbonScore >= 60) {
+            vis.innerHTML = '🏙️🌱';
+            title.innerText = "مساهمة فعالة";
+            scenario.innerHTML = "<b>سيناريو 2030:</b> مدننا أصبحت أذكى وأكثر اخضراراً. أنتِ على الطريق الصحيح، وبقليل من التغيير في عادات الاستهلاك، ستكونين نموذجاً يُحتذى به في مجتمعنا المستدام.";
+        } else {
+            vis.innerHTML = '⚠️🌵';
+            title.innerText = "نحتاجكِ معنا!";
+            scenario.innerHTML = "<b>سيناريو 2030:</b> الرؤية طموحة، لكنها تحتاج لكل يد. تذكري أن هدفنا تقليل الانبعاثات الكربونية بمقدار 278 مليون طن سنوياً. ابدئي اليوم لتكوني جزءاً من التحول العظيم!";
+        }
+    }
+
+    init();
+</script>
+
+</body>
+</html>
