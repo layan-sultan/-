@@ -8,6 +8,7 @@
         :root {
             --main-green: #00843D;
             --light-green: #f0fff4;
+            --saudi-blue: #4fc3f7;
             --glass: rgba(255, 255, 255, 0.95);
             --text-dark: #2d3436;
         }
@@ -54,7 +55,6 @@
         }
 
         .content { padding: 30px 25px; text-align: right; }
-
         .main-title { font-size: 1.6rem; margin: 0; color: var(--text-dark); font-weight: 900; }
         .welcome-text { color: #636e72; font-size: 0.9rem; margin-top: 10px; line-height: 1.6; }
 
@@ -67,38 +67,47 @@
             margin-bottom: 25px; transition: 0.3s; height: 1.2rem; font-style: italic;
         }
 
-        .question-container { transition: 0.4s; }
-        .fade-out { opacity: 0; transform: translateX(20px); }
-        .fade-in { opacity: 1; transform: translateX(0); }
-
         .q-label { font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; display: block; color: var(--text-dark); }
 
         .option {
             background: white; border: 2px solid #f1f3f5; padding: 18px;
             border-radius: 20px; margin-bottom: 12px; cursor: pointer;
             display: flex; justify-content: space-between; align-items: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-weight: 600;
+            transition: 0.3s; font-weight: 600;
         }
-
-        .option:hover {
-            border-color: var(--main-green);
-            background: var(--light-green);
-            transform: translateX(-5px);
-        }
+        .option:hover { border-color: var(--main-green); background: var(--light-green); transform: translateX(-5px); }
 
         #result-screen { display: none; text-align: center; padding: 40px 25px; }
-        .emoji-anim { font-size: 80px; animation: bounceIn 1s both; }
 
-        @keyframes bounceIn {
-            0% { transform: scale(0); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+        .stats-box {
+            background: white; border-radius: 20px; padding: 20px;
+            margin: 20px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
+        .chart-container {
+            display: flex; align-items: flex-end; justify-content: center;
+            gap: 30px; height: 130px; margin: 20px 0; border-bottom: 2px solid #eee;
+        }
+        .chart-bar {
+            width: 45px; border-radius: 8px 8px 0 0; position: relative;
+            transition: height 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            height: 0;
+        }
+        .bar-label {
+            position: absolute; top: -25px; left: 50%; transform: translateX(-50%);
+            font-weight: bold; font-size: 0.8rem; width: 60px;
+        }
+
+        .scenario-box {
+            background: #f8f9fa; padding: 20px; border-radius: 20px;
+            margin: 20px 0; text-align: right; border-right: 5px solid var(--main-green);
+        }
+
+        .vis-emoji { font-size: 3rem; margin-bottom: 10px; display: block; }
 
         .btn-share {
             background: var(--main-green); color: white; border: none; padding: 18px;
             border-radius: 22px; width: 100%; font-size: 1.1rem; font-weight: 800;
-            cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,132,61,0.2);
+            cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;
         }
     </style>
 </head>
@@ -111,7 +120,7 @@
                 <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8a13 13 0 0 1-13 13L11 20z"></path>
             </svg>
         </div>
-        <div class="header-text">
+        <div>
             <h1 style="margin:0; font-size:1.4rem;">GreenStep</h1>
             <small style="color: #888;">مبادرة أسبوع البيئة ٢٠٢٦</small>
         </div>
@@ -119,24 +128,40 @@
 
     <div class="content" id="quiz-area">
         <h1 class="main-title">حاسبة البصمة الكربونية</h1>
-        <p class="welcome-text">شاركينا في حماية كوكبنا. قومي بحساب بصمتك الكربونية لنرى معاً كيف سيتحول كوكبنا إلى جنة خضراء بفضل قراراتك.</p>
-
+        <p class="welcome-text">خياراتكِ اليوم تحدد شكل الغد. هدفت رؤية المملكة لتقليل الانبعاثات بمقدار 278 مليون طن سنوياً، هل أنتِ عون أم عبء؟</p>
         <div class="progress-dots" id="dots"></div>
         <div class="responsibility-msg" id="resp-msg">نحو مستقبل مستدام...</div>
-
-        <div id="q-container" class="question-container">
+        <div id="q-container">
             <span class="q-label" id="q-text">جاري التحميل...</span>
             <div id="options"></div>
         </div>
     </div>
 
     <div id="result-screen">
-        <div id="future-visual" class="emoji-anim"></div>
-        <h2 id="res-title" style="color: var(--text-dark); margin-top: 10px;"></h2>
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 20px; margin: 20px 0; text-align: right; border-right: 5px solid var(--main-green);">
+        <div id="vis-icon" class="vis-emoji"></div>
+        <h2 id="res-title" style="color: var(--text-dark); margin: 0;"></h2>
+
+        <div class="stats-box">
+            <p style="margin:0; font-size: 0.85rem; font-weight: bold;">البصمة السنوية المقدرة</p>
+            <div class="chart-container">
+                <div id="user-bar" class="chart-bar" style="background: var(--main-green);">
+                    <span class="bar-label" id="user-val">0</span>
+                </div>
+                <div class="chart-bar" style="background: var(--saudi-blue); height: 57%;">
+                    <span class="bar-label">56.9</span>
+                </div>
+            </div>
+            <div style="font-size: 0.8rem; display: flex; justify-content: space-around; font-weight: bold; color: #777;">
+                <span>أنتِ</span>
+                <span>المتوسط</span>
+            </div>
+        </div>
+
+        <div class="scenario-box">
             <p id="res-scenario" style="line-height: 1.6; margin: 0; color: #444; font-size: 0.95rem;"></p>
         </div>
-        <button class="btn-share" onclick="alert('صوري الشاشة وشاركينا النتيجة 📸')">شاركينا النتيجة ✨</button>
+
+        <button class="btn-share" onclick="shareResult()">شاركينا النتيجة 🌿</button>
         <button onclick="location.reload()" style="background:none; border:none; color:#888; margin-top:15px; cursor:pointer; font-weight:600;">إعادة الاختبار</button>
     </div>
 </div>
@@ -145,6 +170,7 @@
     let current = 0;
     let carbonScore = 0;
 
+    // الأسئلة (لاحظ أن v:20 تعني خيار بيئي جيد يزيد من "نقاط الوعي")
     const questions = [
         { q: "كم ساعة تقضينها في السيارة أسبوعياً؟", ops: [{t: "أقل من ساعتين", v: 20}, {t: "أكثر من 5 ساعات", v: 0}] },
         { q: "لمسافة قصيرة، ما هو خيارك المفضل؟", ops: [{t: "المشي أو الدراجة", v: 20}, {t: "السيارة دائماً", v: 0}] },
@@ -153,7 +179,7 @@
         { q: "هل تدعمين المنتجات المحلية؟", ops: [{t: "نعم، لتقليل الشحن", v: 20}, {t: "لا يهمني المصدر", v: 0}] }
     ];
 
-    const msgs = ["خطوتك الأولى نحو 2030...", "وعيك يبني مستقبلاً أخضر...", "كل قرار يغير المعادلة...", "أوشكنا على الوصول...", "لنكتشف النتيجة!"];
+    const msgs = ["خطوتك الأولى تحدد مصيرنا...", "أفعالك تترك أثراً لا يمحى...", "هل تساهمين في الأزمة أم الحل؟", "العد التنازلي لـ 2030...", "واجهي أثرك الحقيقي!"];
 
     function init() {
         const dotsContainer = document.getElementById('dots');
@@ -166,50 +192,46 @@
     }
 
     function render() {
-        const qContainer = document.getElementById('q-container');
-        qContainer.classList.remove('fade-in');
-        qContainer.classList.add('fade-out');
+        const q = questions[current];
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('resp-msg').innerText = msgs[current];
+        const dots = document.querySelectorAll('.dot');
+        dots.forEach((d, i) => d.classList.toggle('active', i <= current));
 
-        setTimeout(() => {
-            const q = questions[current];
-            document.getElementById('q-text').innerText = q.q;
-            document.getElementById('resp-msg').innerText = msgs[current];
-
-            const dots = document.querySelectorAll('.dot');
-            dots.forEach((d, i) => d.classList.toggle('active', i <= current));
-
-            const optDiv = document.getElementById('options');
-            optDiv.innerHTML = '';
-
-            q.ops.forEach(o => {
-                const div = document.createElement('div');
-                div.className = 'option';
-                div.innerHTML = `<span>${o.t}</span> <span>←</span>`;
-                div.onclick = () => {
-                    carbonScore += o.v;
-                    if(current < questions.length - 1) {
-                        current++;
-                        render();
-                    } else {
-                        showResult();
-                    }
-                };
-                optDiv.appendChild(div);
-            });
-
-            qContainer.classList.remove('fade-out');
-            qContainer.classList.add('fade-in');
-        }, 300);
+        const optDiv = document.getElementById('options');
+        optDiv.innerHTML = '';
+        q.ops.forEach(o => {
+            const div = document.createElement('div');
+            div.className = 'option';
+            div.innerHTML = `<span>${o.t}</span> <span>←</span>`;
+            div.onclick = () => {
+                carbonScore += o.v;
+                if(current < questions.length - 1) { current++; render(); }
+                else { showResult(); }
+            };
+            optDiv.appendChild(div);
+        });
     }
 
     function showResult() {
         document.getElementById('quiz-area').style.display = 'none';
         document.getElementById('result-screen').style.display = 'block';
 
-        const vis = document.getElementById('future-visual');
+        const vis = document.getElementById('vis-icon');
         const title = document.getElementById('res-title');
         const scenario = document.getElementById('res-scenario');
+        const userBar = document.getElementById('user-bar');
+        const userVal = document.getElementById('user-val');
 
+        // تحويل النقاط إلى بصمة (100 - النقاط) لتمثيلها في الرسم البياني
+        let displayFootprint = 100 - carbonScore;
+
+        setTimeout(() => {
+            userBar.style.height = displayFootprint + '%';
+            userVal.innerText = displayFootprint;
+        }, 100);
+
+        // منطق النتائج بناءً على طلبك
         if(carbonScore >= 80) {
             vis.innerHTML = '🇸🇦🌿';
             title.innerText = "بطلة السعودية الخضراء!";
@@ -220,13 +242,21 @@
             scenario.innerHTML = "<b>سيناريو 2030:</b> مدننا أصبحت أذكى وأكثر اخضراراً. أنتِ على الطريق الصحيح، وبقليل من التغيير في عادات الاستهلاك، ستكونين نموذجاً يُحتذى به في مجتمعنا المستدام.";
         } else {
             vis.innerHTML = '⚠️🌵';
-            title.innerText = "نحتاجكِ معنا!";
-            scenario.innerHTML = "<b>سيناريو 2030:</b> الرؤية طموحة، لكنها تحتاج لكل يد. تذكري أن هدفنا تقليل الانبعاثات الكربونية بمقدار 278 مليون طن سنوياً. ابدئي اليوم لتكوني جزءاً من التحول العظيم!";
+            title.innerText = "تحذير: بصمة كربونية خطيرة";
+            scenario.innerHTML = "<b>سيناريو 2030:</b> نمط حياتك الحالي يساهم مباشرة في تدمير البيئة. إذا استمر الجميع بنفس أسلوبك، سنواجه كوارث مناخية. ابدئي 'خطوة خضراء' اليوم لتكوني جزءاً من التحول، لا سبباً في الأزمة!";
         }
+    }
+
+    async function shareResult() {
+        const text = `نتيجتي في GreenStep: ${document.getElementById('res-title').innerText} 🇸🇦🌿 شاركينا أنتِ أيضاً!`;
+        try {
+            if (navigator.share) {
+                await navigator.share({ title: 'GreenStep', text: text, url: window.location.href });
+            } else { alert("صوري الشاشة وشاركيها! 📸"); }
+        } catch (err) { console.log(err); }
     }
 
     init();
 </script>
-
 </body>
 </html>
